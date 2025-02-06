@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Zeyada&display=swap');
 body {
-  height: 200vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,7 +11,7 @@ body {
   font-family: 'Zeyada';
   font-size: 50px;
   color: rgb(0,0,100);
-  margin-top: 200px;
+  
 }
 .paper {
   background-image: url("https://i0.wp.com/textures.world/wp-content/uploads/2018/10/2-Millimeter-Paper-Background-copy.jpg?ssl=1");
