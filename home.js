@@ -1,98 +1,338 @@
-let highestZ = 1;
-class Paper {
-  holdingPaper = false;
-  mouseTouchX = 0;
-  mouseTouchY = 0;
-  mouseX = 0;
-  mouseY = 0;
-  prevMouseX = 0;
-  prevMouseY = 0;
-  velX = 0;
-  velY = 0;
-  rotation = Math.random() * 30 - 15;
-  currentPaperX = 0;
-  currentPaperY = 0;
-  rotating = false;
 
-  init(paper) {
-    const moveHandler = (x, y) => {
-      if (!this.rotating) {
-        this.mouseX = x;
-        this.mouseY = y;
-        this.velX = this.mouseX - this.prevMouseX;
-        this.velY = this.mouseY - this.prevMouseY;
-      }
-      const dirX = x - this.mouseTouchX;
-      const dirY = y - this.mouseTouchY;
-      const dirLength = Math.sqrt(dirX * dirX + dirY * dirY);
-      const dirNormalizedX = dirX / dirLength;
-      const dirNormalizedY = dirY / dirLength;
-      const angle = Math.atan2(dirNormalizedY, dirNormalizedX);
-      let degrees = (180 * angle) / Math.PI;
-      degrees = (360 + Math.round(degrees)) % 360;
-      if (this.rotating) {
-        this.rotation = degrees;
-      }
-      if (this.holdingPaper) {
+  let highestZ = 1;
+  class Paper {
+    holdingPaper = false;
+    mouseTouchX = 0;
+    mouseTouchY = 0;
+    mouseX = 0;
+    mouseY = 0;
+    prevMouseX = 0;
+    prevMouseY = 0;
+    velX = 0;
+    velY = 0;
+    rotation = Math.random() * 30 - 15;
+    currentPaperX = 0;
+    currentPaperY = 0;
+    rotating = false;
+
+    init(paper) {
+      const moveHandler = (x, y) => {
         if (!this.rotating) {
-          this.currentPaperX += this.velX;
-          this.currentPaperY += this.velY;
+          this.mouseX = x;
+          this.mouseY = y;
+          this.velX = this.mouseX - this.prevMouseX;
+          this.velY = this.mouseY - this.prevMouseY;
         }
-        this.prevMouseX = this.mouseX;
-        this.prevMouseY = this.mouseY;
-        paper.style.transform = `translateX(${this.currentPaperX}px) translateY(${this.currentPaperY}px) rotateZ(${this.rotation}deg)`;
-      }
-    };
+        const dirX = x - this.mouseTouchX;
+        const dirY = y - this.mouseTouchY;
+        const dirLength = Math.sqrt(dirX * dirX + dirY * dirY);
+        const dirNormalizedX = dirX / dirLength;
+        const dirNormalizedY = dirY / dirLength;
+        const angle = Math.atan2(dirNormalizedY, dirNormalizedX);
+        let degrees = (180 * angle) / Math.PI;
+        degrees = (360 + Math.round(degrees)) % 360;
+        if (this.rotating) {
+          this.rotation = degrees;
+        }
+        if (this.holdingPaper) {
+          if (!this.rotating) {
+            this.currentPaperX += this.velX;
+            this.currentPaperY += this.velY;
+          }
+          this.prevMouseX = this.mouseX;
+          this.prevMouseY = this.mouseY;
+          paper.style.transform = `translateX(${this.currentPaperX}px) translateY(${this.currentPaperY}px) rotateZ(${this.rotation}deg)`;
+        }
+      };
 
-    document.addEventListener('mousemove', (e) => moveHandler(e.clientX, e.clientY));
-    document.addEventListener('touchmove', (e) => {
-      moveHandler(e.touches[0].clientX, e.touches[0].clientY);
-    });
+      document.addEventListener('mousemove', (e) => moveHandler(e.clientX, e.clientY));
+      document.addEventListener('touchmove', (e) => {
+        moveHandler(e.touches[0].clientX, e.touches[0].clientY);
+      });
 
-    const startHandler = (x, y, button) => {
-      if (this.holdingPaper) return;
-      this.holdingPaper = true;
-      paper.style.zIndex = highestZ;
-      highestZ += 1;
-      if (button === 0) {
-        this.mouseTouchX = x;
-        this.mouseTouchY = y;
-        this.prevMouseX = x;
-        this.prevMouseY = y;
-      }
-      if (button === 2) {
-        this.rotating = true;
-      }
-    };
+      const startHandler = (x, y, button) => {
+        if (this.holdingPaper) return;
+        this.holdingPaper = true;
+        paper.style.zIndex = highestZ;
+        highestZ += 1;
+        if (button === 0) {
+          this.mouseTouchX = x;
+          this.mouseTouchY = y;
+          this.prevMouseX = x;
+          this.prevMouseY = y;
+        }
+        if (button === 2) {
+          this.rotating = true;
+        }
+      };
 
-    paper.addEventListener('mousedown', (e) => startHandler(e.clientX, e.clientY, e.button));
-    paper.addEventListener('touchstart', (e) => {
-      startHandler(e.touches[0].clientX, e.touches[0].clientY, 0);
-    });
+      paper.addEventListener('mousedown', (e) => startHandler(e.clientX, e.clientY, e.button));
+      paper.addEventListener('touchstart', (e) => {
+        startHandler(e.touches[0].clientX, e.touches[0].clientY, 0);
+      });
 
-    const endHandler = () => {
-      this.holdingPaper = false;
-      this.rotating = false;
-    };
+      const endHandler = () => {
+        this.holdingPaper = false;
+        this.rotating = false;
+      };
 
-    window.addEventListener('mouseup', endHandler);
-    window.addEventListener('touchend', endHandler);
+      window.addEventListener('mouseup', endHandler);
+      window.addEventListener('touchend', endHandler);
+    }
   }
-}
 
 
 
-const papers = Array.from(document.querySelectorAll('.paper'));
-papers.forEach(paper => {
-  const p = new Paper();
-  p.init(paper);
-});
-function yesNoButton(){
-  const yesNoButton = document.getElementById('js-yesno-button');
-  yesNoButton.classList.add('yesno-button-clicked');
-  document.getElementById('js-yesno-button').innerText = 'ofcourse you will babe <3';
+  const papers = Array.from(document.querySelectorAll('.paper'));
+  papers.forEach(paper => {
+    const p = new Paper();
+    p.init(paper);
+  });
+  function yesNoButton(){
+    const yesNoButton = document.getElementById('js-yesno-button');
+    yesNoButton.classList.add('yesno-button-clicked');
+    document.getElementById('js-yesno-button').innerText = 'ofcourse I will babe <3';
 
-  yesNoButton.addEventListener('click', () => {
-    yesNoButton.innerText = 'Yes Yes Yes Yes 😍';
-  })
-};
+    yesNoButton.addEventListener('click', () => {
+      yesNoButton.innerText = 'Yes Yes Yes Yes 😍';
+    })
+  };
+
+
+  // Happy Birthday
+  function happyBirthday(){
+    const happyBirth = document.body;
+    happyBirth.innerHTML = `
+      <canvas id="c"></canvas>
+      <button class="text">HAPPY BIRTHDAY!!! 🎉🎂</button>
+      <br>
+      <div id="popup">DUE TO UNFORTONATE CIRCUMSTANCES YOUR BIRTHDAY GIFT IS DELAYED 😩&#129402;&#129402;</div>
+    `;  
+    console.log(happyBirth);
+    
+    balloonAnimation();
+    showPopupMessageWithDelay();
+    
+
+  };
+
+  function showPopupMessage() {
+    const popup = document.getElementById('popup');
+    popup.style.display = 'block';
+    setTimeout(() => {
+      popup.style.display = 'none';
+    }, 4000); // Pop-up will disappear after 4 seconds
+  }
+
+  function showPopupMessageWithDelay() {
+    // setTimeout(() => {
+    //   const popup = document.getElementById('popup');
+    //   popup.style.display = 'block';
+    // }, 4000); // Pop-up will appear after 4 seconds
+
+    setTimeout(() => {
+      const popup = document.getElementById('popup');
+      popup.style.display = 'block';
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 6000); // Pop-up will disappear after 3 seconds
+    }, 5000); // Pop-up will appear after 3 seconds
+  }
+
+  function balloonAnimation(){
+    var c = document.getElementById("c");
+  var ctx = c.getContext("2d");
+
+  var bc = document.createElement("canvas");
+  var bCtx = bc.getContext("2d");
+
+  var cw = c.width = bc.width = window.innerWidth,
+    cx = cw / 2;
+  var ch = c.height = bc.height = window.innerHeight + 100,
+    cy = ch;
+
+  var frames = 0;
+  var requestId = null;
+  var rad = (Math.PI / 180);
+  var kappa = 0.5522847498;
+
+  var x, y;
+  bCtx.strokeStyle = "#abcdef";
+  bCtx.lineWidth = 1;
+
+  var balloons = [];
+
+  function Balloon() {
+    this.r = randomIntFromInterval(20, 70);
+    this.R = 1.4 * this.r;
+    this.x = randomIntFromInterval(this.r, cw - this.r);
+    this.y = ch + 2 * this.r;
+    this.a = this.r * 4.5;
+    this.pm = Math.random() < 0.5 ? -1 : 1;
+    this.speed = randomIntFromInterval(1.5, 4);
+    this.k = this.speed / 5;
+    this.hue = this.pm > 0 ? "210" : "10";
+  }
+
+  function Draw() {
+
+    updateBallons(bCtx);
+
+    ctx.clearRect(0, 0, cw, ch);
+    var img = bc;
+    ctx.drawImage(img, 0, 0);
+
+    requestId = window.requestAnimationFrame(Draw);
+  }
+  //requestId = window.requestAnimationFrame(Draw);
+
+  function Init() {
+    if (requestId) {
+      window.cancelAnimationFrame(requestId);
+      requestId = null;
+    }
+    cw = c.width = bc.width = window.innerWidth, cx = cw / 2;
+    ch = c.height = bc.height = window.innerHeight + 100, cy = ch;
+    bCtx.strokeStyle = "#abcdef";
+    bCtx.lineWidth = 1;
+    Draw();
+  }
+
+  setTimeout(function() {
+    Init();
+    window.addEventListener('resize', Init, false);
+  }, 15);
+
+  function updateBallons(ctx) {
+    frames += 1;
+    if (frames % 37 == 0 && balloons.length < 37) {
+      var balloon = new Balloon();
+      balloons.push(balloon);
+    }
+    ctx.clearRect(0, 0, cw, ch);
+
+    for (var i = 0; i < balloons.length; i++) {
+      var b = balloons[i];
+      if (b.y > -b.a) {
+        b.y -= b.speed
+      } else {
+        b.y = parseInt(ch + b.r + b.R);
+      }
+
+      var p = thread(b, ctx);
+      b.cx = p.x;
+      b.cy = p.y - b.R;
+      ctx.fillStyle = Grd(p.x, p.y, b.r, b.hue)
+      drawBalloon(b, ctx);
+    }
+  }
+
+  function drawBalloon(b, ctx) {
+
+    var or = b.r * kappa; // offset
+
+    var p1 = {
+      x: b.cx - b.r,
+      y: b.cy
+    }
+    var pc11 = {
+      x: p1.x,
+      y: p1.y + or
+    }
+    var pc12 = {
+      x: p1.x,
+      y: p1.y - or
+    }
+
+    var p2 = {
+      x: b.cx,
+      y: b.cy - b.r
+    }
+    var pc21 = {
+      x: b.cx - or,
+      y: p2.y
+    }
+    var pc22 = {
+      x: b.cx + or,
+      y: p2.y
+    }
+
+    var p3 = {
+      x: b.cx + b.r,
+      y: b.cy
+    }
+    var pc31 = {
+      x: p3.x,
+      y: p3.y - or
+    }
+    var pc32 = {
+      x: p3.x,
+      y: p3.y + or
+    }
+
+    var p4 = {
+      x: b.cx,
+      y: b.cy + b.R
+    };
+    var pc41 = {
+      x: p4.x + or,
+      y: p4.y
+    }
+    var pc42 = {
+      x: p4.x - or,
+      y: p4.y
+    }
+
+    var t1 = {
+      x: p4.x + .2 * b.r * Math.cos(70 * rad),
+      y: p4.y + .2 * b.r * Math.sin(70 * rad)
+    }
+    var t2 = {
+      x: p4.x + .2 * b.r * Math.cos(110 * rad),
+      y: p4.y + .2 * b.r * Math.sin(110 * rad)
+    }
+
+    //balloon
+    ctx.beginPath();
+    ctx.moveTo(p4.x, p4.y);
+    ctx.bezierCurveTo(pc42.x, pc42.y, pc11.x, pc11.y, p1.x, p1.y);
+    ctx.bezierCurveTo(pc12.x, pc12.y, pc21.x, pc21.y, p2.x, p2.y);
+    ctx.bezierCurveTo(pc22.x, pc22.y, pc31.x, pc31.y, p3.x, p3.y);
+    ctx.bezierCurveTo(pc32.x, pc32.y, pc41.x, pc41.y, p4.x, p4.y);
+    //knot
+    ctx.lineTo(t1.x, t1.y);
+    ctx.lineTo(t2.x, t2.y);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function thread(b, ctx) {
+    ctx.beginPath();
+
+    for (var i = b.a; i > 0; i -= 1) {
+      var t = i * rad;
+      x = b.x + b.pm * 50 * Math.cos(b.k * t - frames * rad)
+      y = b.y + b.pm * 25 * Math.sin(b.k * t - frames * rad) + 50 * t
+      ctx.lineTo(x, y)
+    }
+    ctx.stroke();
+    return p = {
+      x: x,
+      y: y
+    }
+  }
+
+  function Grd(x, y, r, hue) {
+    grd = ctx.createRadialGradient(x - .5 * r, y - 1.7 * r, 0, x - .5 * r, y - 1.7 * r, r);
+    grd.addColorStop(0, 'hsla(' + hue + ',100%,65%,.95)');
+    grd.addColorStop(0.4, 'hsla(' + hue + ',100%,45%,.85)');
+    grd.addColorStop(1, 'hsla(' + hue + ',100%,25%,.80)');
+    return grd;
+  }
+
+  function randomIntFromInterval(mn, mx) {
+    return ~~(Math.random() * (mx - mn + 1) + mn);
+  }
+  };
+
+  
